@@ -17,6 +17,7 @@
     button, select { width:100%; background:#17243e; color:var(--text); border:1px solid #34496e; border-radius:8px; padding:8px; cursor:pointer }
     button:hover { background:#22365c } .row { display:flex; gap:7px } .row>* { flex:1 }
     #info { right:16px; top:16px; width:230px; padding:14px; min-height:110px }
+    #flightSpeed { margin-top:10px; padding-top:9px; border-top:1px solid var(--line); color:#9fc4ff; font-size:12px }
     #info h3 { margin:0 0 8px; color:#8fbcff } #info p { margin:5px 0; color:var(--muted); font-size:12px }
     #hint { position:fixed; right:16px; bottom:16px; color:#71809a; font-size:11px; z-index:2; text-align:right }
     .value { float:right; color:#d8e5ff }
@@ -25,7 +26,7 @@
 <body>
 <div id="app"></div>
 <div id="title" class="panel">Solar System — Realistic Data Lab<small>NASA/JPL-informed visualisation · data mode</small></div>
-<div id="info" class="panel"><h3>Realistic branch</h3><p>Local NASA/JPL-informed renderer. Click a body to inspect it.</p></div>
+<div id="info" class="panel"><h3>Realistic branch</h3><p>Local NASA/JPL-informed renderer. Click a body to inspect it.</p><div id="flightSpeed">Camera speed: 0.0 km/s</div></div>
 <div id="controls" class="panel">
   <div class="row"><button id="pause">Pause</button><button id="reset">Reset</button></div>
   <label>Simulation speed <span class="value" id="speedText">10 days/s</span></label>
@@ -102,8 +103,9 @@ function mergeTestBodies(){for(let i=bodies.length-1;i>=0;i--)for(let j=i-1;j>=0
 function focusBody(b,close=false){if(!b)return;controls.target.copy(b.pos);const radius=b.mesh.geometry.parameters.radius||.05;const d=close?Math.max(radius*2.8,.012):Math.max(radius*7,1.2);camera.position.copy(b.pos).add(new THREE.Vector3(d*.45,d*.28,d));controls.update()}
 renderer.domElement.addEventListener('click',e=>{const ray=new THREE.Raycaster(), mouse=new THREE.Vector2(e.clientX/innerWidth*2-1,-e.clientY/innerHeight*2+1);ray.setFromCamera(mouse,camera);const hit=ray.intersectObjects(bodies.map(b=>b.mesh))[0];if(hit)showInfo(bodies.find(b=>b.mesh===hit.object))});
 renderer.domElement.addEventListener('dblclick',e=>{const ray=new THREE.Raycaster(), mouse=new THREE.Vector2(e.clientX/innerWidth*2-1,-e.clientY/innerHeight*2+1);ray.setFromCamera(mouse,camera);const hit=ray.intersectObjects(bodies.map(b=>b.mesh))[0];if(hit)focusBody(bodies.find(b=>b.mesh===hit.object),true)});
-const keys={}; addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true}); addEventListener('keyup',e=>{keys[e.key.toLowerCase()]=false});
+const keys={}; let previousCameraPosition=camera.position.clone(),cameraSpeed=0; addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true}); addEventListener('keyup',e=>{keys[e.key.toLowerCase()]=false});
 function wideView(){camera.position.set(0,20,32);controls.target.set(0,0,0);controls.update()}
+let previousSpeedTime=performance.now();function updateFlightSpeed(now){const dt=Math.max((now-previousSpeedTime)/1000,.001);previousSpeedTime=now;const distance=camera.position.distanceTo(previousCameraPosition);cameraSpeed=THREE.MathUtils.lerp(cameraSpeed,distance/dt,.18);previousCameraPosition.copy(camera.position);document.querySelector('#flightSpeed').textContent='Camera speed: '+(cameraSpeed*4740).toFixed(1)+' km/s';requestAnimationFrame(updateFlightSpeed)}requestAnimationFrame(updateFlightSpeed);
 addEventListener('keydown',e=>{if(e.key==='Home')wideView()});
 document.querySelector('#pause').onclick=()=>{running=!running;document.querySelector('#pause').textContent=running?'Pause':'Play'}; document.querySelector('#reset').onclick=reset;
 document.querySelector('#speed').oninput=e=>document.querySelector('#speedText').textContent=(+e.target.value/5).toFixed(1)+' days/s'; document.querySelector('#focus').onchange=e=>{const b=bodies.find(x=>x.name===e.target.value);if(b){controls.target.copy(b.pos);const d=Math.max(1.2,b.mesh.geometry.parameters.radius*7);camera.position.copy(b.pos).add(new THREE.Vector3(d*.45,d*.35,d));}else{controls.target.set(0,0,0);camera.position.set(0,20,32)}};
