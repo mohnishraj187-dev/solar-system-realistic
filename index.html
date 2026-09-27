@@ -46,12 +46,12 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 const G = 4 * Math.PI * Math.PI; // AU^3 / solar mass / year^2
-const spinDays={Sun:25.4,Mercury:58.6,Venus:-243,Earth:.997,Moon:27.32,Mars:1.026,Jupiter:.414,Saturn:.444,Uranus:-.718,Neptune:.671,Pluto:6.387,Haumea:.163};
-const orbitInclinations={Mercury:7.00,Venus:3.39,Earth:0,Mars:1.85,Ceres:10.59,Vesta:7.14,Jupiter:1.30,Saturn:2.49,Uranus:.77,Neptune:1.77,Pluto:17.16,Haumea:28.2};
+const spinDays={Sun:25.4,Mercury:58.6,Venus:-243,Earth:.997,Moon:27.32,Mars:1.026,Jupiter:.414,Saturn:.444,Uranus:-.718,Neptune:.671,Pluto:6.387,Haumea:.163,Eris:25.9,Makemake:7.77,Quaoar:8.84,Orcus:10.1,Sedna:10.3};
+const orbitInclinations={Mercury:7.00,Venus:3.39,Earth:0,Mars:1.85,Ceres:10.59,Vesta:7.14,Jupiter:1.30,Saturn:2.49,Uranus:.77,Neptune:1.77,Pluto:17.16,Haumea:28.2,Eris:44.2,Makemake:29.0,Quaoar:8.0,Orcus:20.6,Sedna:11.9};
 const definitions = [
   ['Sun',1,0,0.22,0xffc857], ['Mercury',1.66e-7,.387,.035,0xb8b8b8], ['Venus',2.45e-6,.723,.055,0xd99c45],
   ['Earth',3.00e-6,1,.06,0x4d9cff], ['Mars',3.23e-7,1.524,.045,0xd95c43], ['Ceres',4.72e-10,2.77,.055,0xaaa39a], ['Vesta',1.30e-10,2.36,.045,0xc7b08e], ['Jupiter',9.55e-4,5.204,.13,0xd89d55],
-  ['Saturn',2.86e-4,9.583,.11,0xd8bd83], ['Uranus',4.37e-5,19.22,.085,0x6ed5d8], ['Neptune',5.15e-5,30.11,.08,0x5279ea], ['Pluto',6.55e-9,39.48,.12,0xb8b1a6], ['Haumea',2.0e-9,43.13,.09,0xc8c4b8]
+  ['Saturn',2.86e-4,9.583,.11,0xd8bd83], ['Uranus',4.37e-5,19.22,.085,0x6ed5d8], ['Neptune',5.15e-5,30.11,.08,0x5279ea], ['Pluto',6.55e-9,39.48,.12,0xb8b1a6], ['Haumea',2.0e-9,43.13,.09,0xc8c4b8], ['Eris',8.3e-9,67.8,.08,0xc9c9c4], ['Makemake',4.4e-9,45.8,.075,0xbbaea2], ['Quaoar',7.0e-10,43.7,.065,0xa99b91], ['Orcus',3.0e-10,39.2,.06,0x8f8986], ['Sedna',5.0e-10,86.0,.06,0xb26f59]
 ];
 let bodies=[], running=false, simYears=0, selected=null, testCount=0, labels=[], realisticMode=true;
 const satellites=[];
